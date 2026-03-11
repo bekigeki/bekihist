@@ -1,0 +1,14 @@
+inst/doc
+/doc/
+/dev/
+/tests/
+/data-raw/
+/Meta/
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Rproj
+.Rcheck/
+.projectile
+.DS_Store
