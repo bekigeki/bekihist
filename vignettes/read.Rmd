@@ -1,0 +1,210 @@
+---
+title: "read"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{read}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bekihist)
+devtools::load_all()
+```
+
+# Layouts
+
+```{r layouts}
+# eigenes Layout definieren
+layout_2025 <- list(
+  Cohort = "2025", 
+  join_col = ".row",
+  school = list(
+    sheet = 1,
+    range = "C3:F14",
+    cells = list(
+      Schulnummer                = c(row = 2, col = 1),
+      Klassenname                = c(row = 3, col = 1),
+      Version_Eingabemaske       = c(row = 1, col = 4),
+      Anzahl_Kinder_Klassen      = c(row = 4, col = 1),
+      Anzahl_Kinder_Klassenstufe = c(row = 5, col = 1),
+      Testzeitpunkt_Jahr         = c(row = 6, col = 3),
+      Testzeitpunkt_Monat        = c(row = 6, col = 2),
+      Testzeitpunkt_Tag          = c(row = 6, col = 1),
+      Schulname                  = c(row = 7, col = 1)
+    )   
+  ),
+  profile = list(
+      sheet   = 2,
+      range   = "A11:N167",
+      colnames = c("Nr","Geschlecht","Geburtstag_Tag",
+                   "Geburtstag_Monat","Geburtstag_Jahr","Groesse_cm",
+                   "Masse_kg", "Schulsport_AG","Vereinsmitglied",
+                   "Sportart_1","Sportart_2","Sportart_3",
+                   "Sportarthaeufigkeit_Woche","Sporartbeginn_Jahr")
+  ),
+  tests = list(
+    sheet   = 3,
+    range   = "A11:J166",
+    colnames = c("Nr","KME_GE","S20_s","BPT_m","SLJ_cm","OLB_s",
+                 "Star_s","Run_m","Run_C","Anmerkungen")
+  )
+)
+
+```
+# xlsx-Daten einlesen
+
+
+## Beispiel: Eine Schule 
+### Schul-Informationen
+
+```{r school-info}
+file <- system.file("data", "2025", "2025-B1.xlsx", package = "bekihist")
+
+df_schule <- read_school_info_generic(
+  file = file,
+  spec = layout_2025$school) |>
+  dplyr::select(-Dir_name) # Pfad verstecken
+str(df_schule)
+```
+### Motorik-Testdaten
+```{r motorik}
+df_test <-  read_table_generic(file =  file,  spec =  layout_2025$tests)
+str(df_test)
+```
+
+### Fragebogen-Daten
+
+```{r survey}
+df_profil <-  read_table_generic(file =  file,  spec =  layout_2025$profile)
+str(df_profil)
+```
+
+### Alle Tabellenblätter
+
+```{r all}
+d <- read_sheets_in_file(file = file, 
+                    layout = layout_2025) |>
+  dplyr::select(-Dir_name) # Pfad verstecken
+str(d)
+```
+## Beispiel: Mehrere Schulen
+
+```{r dir, eval=FALSE}
+a <- bind_files_in_dir(
+  path_in = system.file("data", "2025", package = "bekihist"), 
+  layout =  layout_2025)
+str(a)
+```
+
+# Vordefinierte Layouts
+
+```{r layouts_all, eval=FALSE}
+# alle vordefinierten layouts: 
+.bekihist_layouts
+```
+
+## Beispiel 2017
+```{r 2017, eval=FALSE}
+file <- system.file("data", "2017", "2017-B1.xlsx", package = "bekihist")
+
+get_layout("2017")
+
+read_sheets_in_file(file = file, 
+                    layout = get_layout("2017"))
+``` 
+
+
+## 2018
+```{r 2018, eval=FALSE}
+file <- system.file("data", "2018", "2018-B1.xlsx", package = "bekihist")
+
+get_layout("2018")
+
+read_sheets_in_file(file = file, 
+                    layout = get_layout("2018"))
+
+``` 
+
+
+
+
+## 2019
+```{r 2019, eval=FALSE}
+file <- system.file("data", "2019", "2019-B1.xlsx", package = "bekihist")
+get_layout("2019")
+
+read_sheets_in_file(file = file, 
+                    layout = get_layout("2019"))
+``` 
+## 2020
+```{r 2020, eval=FALSE}
+get_layout("2020")
+
+read_sheets_in_file(
+  file =  system.file("data", "2020", "2020-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2020"))
+``` 
+## 2021
+```{r 2021, eval=FALSE}
+get_layout("2021")
+
+read_sheets_in_file(
+  file = system.file("data", "2021", "2021-B1.xlsx", package = "bekihist")
+  layout = get_layout("2021"))
+
+```
+## 2022
+```{r 2022, eval=FALSE}
+get_layout("2022")
+
+read_sheets_in_file(
+  file = system.file("data", "2022", "2022-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2022"))
+
+``` 
+## 2023
+
+```{r 2023, eval=FALSE}
+get_layout("2023")
+
+str(read_sheets_in_file(
+  file = system.file("data", "2023", "2023-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2023")))
+
+``` 
+## 2024
+```{r 2024, eval=FALSE}
+get_layout("2024")
+
+read_sheets_in_file(
+  file = system.file("data", "2024", "2024-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2024")) |>
+  dplyr::select(-Dir_name) |>
+  str()
+
+``` 
+## 2025
+```{r 2025, eval=FALSE}
+get_layout("2025")
+
+str(read_sheets_in_file(
+  file = system.file("data", "2025", "2025-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2025")))
+``` 
+
+
+
+
+
+
+
+
+

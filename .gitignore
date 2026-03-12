@@ -3,6 +3,7 @@ inst/doc
 /dev/
 /tests/
 /data-raw/
+/tmp/
 /Meta/
 .Rproj.user/
 .Rhistory
