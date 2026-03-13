@@ -7,19 +7,19 @@
       sheet = 1,
       range = "C5:E9",
       cells = list(
-        Schulnummer           = c(row = 3, col = 1),
-        Klassenname           = c(row = 4, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 5, col = 3),
-        Testzeitpunkt_Monat    = c(row = 5, col = 2),
-        Testzeitpunkt_Tag      = c(row = 5, col = 1),
-        Schulname              = c(row = 1, col = 1)
+        Schulnummer         = c(row = 3, col = 1),
+        Klassenname         = c(row = 4, col = 1),
+        Testdatum_Jahr      = c(row = 5, col = 3),
+        Testdatum_Monat     = c(row = 5, col = 2),
+        Testdatum_Tag       = c(row = 5, col = 1),
+        Schulname           = c(row = 1, col = 1)
       )   
     ),
     profile = list(
       sheet   = 2,
       range   = "C17:R167",
-      colnames = c("Nr","Geschlecht","Geburtsdatum_TTMMJJ",
-                   "Geburtsdatum_Monat","Geburtsdatum_Jahr",
+      colnames = c("Nr","Geschlecht",
+                   "Geburtsdatum_XLSX", "Geburtsdatum_Monat","Geburtsdatum_Jahr",
                    "Groesse_cm", "Masse_kg",
                    "Schulsport_AG","Schulsport_1", "Schulsport_2", "Schulsport_3",
                    "Vereinsmitglied", "Verein_1","Verein_2","Verein_3",
@@ -42,12 +42,12 @@
       sheet = 1,
       range = "C5:E9",
       cells = list(
-        Schulnummer           = c(row = 3, col = 1),
-        Klassenname           = c(row = 4, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 5, col = 3),
-        Testzeitpunkt_Monat    = c(row = 5, col = 2),
-        Testzeitpunkt_Tag      = c(row = 5, col = 1),
-        Schulname              = c(row = 1, col = 1)
+        Schulnummer     = c(row = 3, col = 1),
+        Klassenname     = c(row = 4, col = 1),
+        Testdatum_Jahr  = c(row = 5, col = 3),
+        Testdatum_Monat = c(row = 5, col = 2),
+        Testdatum_Tag   = c(row = 5, col = 1),
+        Schulname       = c(row = 1, col = 1)
       )   
     ),
     profile = list(
@@ -77,12 +77,12 @@
       sheet = 1,
       range = "C5:E10",
       cells = list(
-        Schulnummer            = c(row = 3, col = 1),
-        Klassenname            = c(row = 4, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 5, col = 3),
-        Testzeitpunkt_Monat    = c(row = 5, col = 2),
-        Testzeitpunkt_Tag      = c(row = 5, col = 1),
-        Schulname              = c(row = 1, col = 1),
+        Schulnummer             = c(row = 3, col = 1),
+        Klassenname             = c(row = 4, col = 1),
+        Testdatum_Jahr          = c(row = 5, col = 3),
+        Testdatum_Monat         = c(row = 5, col = 2),
+        Testdatum_Tag           = c(row = 5, col = 1),
+        Schulname               = c(row = 1, col = 1),
         Einverstaendnis_fehlend = c(row = 6, col = 1)
       )   
     ),
@@ -113,12 +113,12 @@
       sheet = 1,
       range = "C5:E10",
       cells = list(
-        Schulnummer           = c(row = 3, col = 1),
-        Klassenname           = c(row = 4, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 5, col = 3),
-        Testzeitpunkt_Monat    = c(row = 5, col = 2),
-        Testzeitpunkt_Tag      = c(row = 5, col = 1),
-        Schulname              = c(row = 1, col = 1),
+        Schulnummer             = c(row = 3, col = 1),
+        Klassenname             = c(row = 4, col = 1),
+        Testdatum_Jahr          = c(row = 5, col = 3),
+        Testdatum_Monat         = c(row = 5, col = 2),
+        Testdatum_Tag           = c(row = 5, col = 1),
+        Schulname               = c(row = 1, col = 1),
         Einverstaendnis_fehlend = c(row = 6, col = 1)
       )   
     ),
@@ -149,13 +149,13 @@
       sheet = 1,
       range = "C5:E9",
       cells = list(
-        Schulnummer           = c(row = 3, col = 1),
-        Klassenname           = c(row = 1, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 2, col = 3),
-        Testzeitpunkt_Monat    = c(row = 2, col = 2),
-        Testzeitpunkt_Tag      = c(row = 2, col = 1),
-        Schulname              = c(row = 4, col = 1),
-        Schulort               = c(row = 5, col = 1)
+        Schulnummer     = c(row = 3, col = 1),
+        Klassenname     = c(row = 1, col = 1),
+        Testdatum_Jahr  = c(row = 2, col = 3),
+        Testdatum_Monat = c(row = 2, col = 2),
+        Testdatum_Tag   = c(row = 2, col = 1),
+        Schulname       = c(row = 4, col = 1),
+        Schulort        = c(row = 5, col = 1)
       )   
     ),
     profile = list(
@@ -185,13 +185,13 @@
       sheet = 1,
       range = "C5:E9",
       cells = list(
-        Schulnummer           = c(row = 3, col = 1),
-        Klassenname           = c(row = 1, col = 1),
-        Testzeitpunkt_Jahr     = c(row = 2, col = 3),
-        Testzeitpunkt_Monat    = c(row = 2, col = 2),
-        Testzeitpunkt_Tag      = c(row = 2, col = 1),
-        Schulname              = c(row = 4, col = 1),
-        Schulort               = c(row = 5, col = 1)
+        Schulnummer     = c(row = 3, col = 1),
+        Klassenname     = c(row = 1, col = 1),
+        Testdatum_Jahr  = c(row = 2, col = 3),
+        Testdatum_Monat = c(row = 2, col = 2),
+        Testdatum_Tag   = c(row = 2, col = 1),
+        Schulname       = c(row = 4, col = 1),
+        Schulort        = c(row = 5, col = 1)
       )   
     ),
     profile = list(
@@ -221,16 +221,16 @@
       sheet = 1,
       range = "C3:F11",
       cells = list(
-        Schulnummer            = c(row = 2, col = 1),
-        Version_Eingabemaske   = c(row = 1, col = 4),
-        Klassenname            = c(row = 3, col = 1),
-        Klassenstaerke         = c(row = 4, col = 1), 
-        Testzeitpunkt_Jahr     = c(row = 5, col = 3),
-        Testzeitpunkt_Monat    = c(row = 5, col = 2),
-        Testzeitpunkt_Tag      = c(row = 5, col = 1),
-        Schulname              = c(row = 6, col = 1),
-        Postleitzahl           = c(row = 8, col = 1), 
-        Schulort               = c(row = 9, col = 1)
+        Schulnummer          = c(row = 2, col = 1),
+        Version_Eingabemaske = c(row = 1, col = 4),
+        Klassenname          = c(row = 3, col = 1),
+        Klassenstaerke       = c(row = 4, col = 1), 
+        Testdatum_Jahr       = c(row = 5, col = 3),
+        Testdatum_Monat      = c(row = 5, col = 2),
+        Testdatum_Tag        = c(row = 5, col = 1),
+        Schulname            = c(row = 6, col = 1),
+        Postleitzahl         = c(row = 8, col = 1), 
+        Schulort             = c(row = 9, col = 1)
       )   
     ), 
     profile = list(
@@ -261,17 +261,17 @@
       sheet = 1,
       range = "C3:F12",
       cells = list(
-        Schulnummer            = c(row = 2, col = 1),
-        Version_Eingabemaske   = c(row = 1, col = 4),
-        Klassenname            = c(row = 3, col = 1),
-        Klassenstaerke         = c(row = 4, col = 1),
-        Klassenstufenstaerke   = c(row = 5, col = 1), 
-        Testzeitpunkt_Jahr     = c(row = 6, col = 3),
-        Testzeitpunkt_Monat    = c(row = 6, col = 2),
-        Testzeitpunkt_Tag      = c(row = 6, col = 1),
-        Schulname              = c(row = 7, col = 1),
-        Postleitzahl           = c(row = 9, col = 1), 
-        Schulort               = c(row = 10, col = 1)
+        Schulnummer          = c(row = 2, col = 1),
+        Version_Eingabemaske = c(row = 1, col = 4),
+        Klassenname          = c(row = 3, col = 1),
+        Klassenstaerke       = c(row = 4, col = 1),
+        Klassenstufenstaerke = c(row = 5, col = 1), 
+        Testdatum_Jahr       = c(row = 6, col = 3),
+        Testdatum_Monat      = c(row = 6, col = 2),
+        Testdatum_Tag        = c(row = 6, col = 1),
+        Schulname            = c(row = 7, col = 1),
+        Postleitzahl         = c(row = 9, col = 1), 
+        Schulort             = c(row = 10, col = 1)
       )   
     ),
     profile = list(
@@ -302,17 +302,17 @@
       sheet = 1,
       range = "C3:F12",
       cells = list(
-        Schulnummer            = c(row = 2, col = 1),
-        Version_Eingabemaske   = c(row = 1, col = 4),
-        Klassenname            = c(row = 3, col = 1),
-        Klassenstaerke         = c(row = 4, col = 1),
-        Klassenstufenstaerke   = c(row = 5, col = 1), 
-        Testzeitpunkt_Jahr     = c(row = 6, col = 3),
-        Testzeitpunkt_Monat    = c(row = 6, col = 2),
-        Testzeitpunkt_Tag      = c(row = 6, col = 1),
-        Schulname              = c(row = 7, col = 1),
-        Postleitzahl           = c(row = 9, col = 1), 
-        Schulort               = c(row = 10, col = 1)
+        Schulnummer          = c(row = 2, col = 1),
+        Version_Eingabemaske = c(row = 1, col = 4),
+        Klassenname          = c(row = 3, col = 1),
+        Klassenstaerke       = c(row = 4, col = 1),
+        Klassenstufenstaerke = c(row = 5, col = 1), 
+        Testdatum_Jahr       = c(row = 6, col = 3),
+        Testdatum_Monat      = c(row = 6, col = 2),
+        Testdatum_Tag        = c(row = 6, col = 1),
+        Schulname            = c(row = 7, col = 1),
+        Postleitzahl         = c(row = 9, col = 1), 
+        Schulort             = c(row = 10, col = 1)
       )   
     ),
     profile = list(

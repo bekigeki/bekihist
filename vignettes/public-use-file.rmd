@@ -1,0 +1,300 @@
+---
+title: "public-usefile: Dokumentation zur Erstellung eines public use files jahrgangsübergreifender rohwerte"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{public-usefile: Dokumentation zur Erstellung eines public use files jahrgangsübergreifender rohwerte}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bekihist)
+library(dplyr)
+```
+# Einleitung
+
+Dieses Vignette zeigt, wie die XLSX-Dateien jahrgangsübergreifend eingelesen und
+als csv- und rds-Datei zur weiteren Bearbeitung zwischengespeichert werden sowie der Allgemeinheit als
+public usefile zur Verfügung gestellt werden.
+
+# Kohorten-Ordner einlesen
+
+- ).
+
+```{r loop, eval=FALSE}
+library(dplyr)
+library(purrr)
+library(readr)
+
+path    <- system.file("data-raw", package = "bekihist")
+
+# Kohorten-Ordner waehlen
+cohorts <- as.character(2017:2025)
+
+# 1) Per-cohort processing
+for (cohort in cohorts) {
+
+  # a) Deduplizieren:
+  ## - es könnte sein, dass identische Dateiinhalte unter verschiedenem Dateinamen abgespeichert wurden
+  ## - *Achtung:* dieser einfache Duplikats-Check ersetzt nicht einen weiteren im späteren Verlauf der Analyse, bei dem
+  ## auf doppelte bzw. einzigartige anonymisierte Kennung geprüft werden muss (eine Schule könnte im Verlauf z.B. eine Eingabemaske mehrmals
+  ## mit verschiedenen Werten eingereicht haben und die Posteingangs-Verantwortlichen diese Möglicherweiße beide Versionen für
+  ## die Weiterverarbeitung ablegten
+  
+  # b) Bind xslx
+  # c) save
+  
+  read_cohort_xlsx(base_path = path, cohort = cohort)
+}
+
+
+```
+
+# Kohorten verbinden
+
+```{r cohort-bind, eval=FALSE}
+# waehle Spalten aus, in denen geprüft werden soll Werte vorhanden sind,
+# lösche daraufhin die Zeilen, in denen kein einziger Wert darin enthalten ist
+# Hintergrund: Viele Spalten enthalten ueber alle Zeilen feste Werte, die
+
+
+search_cols =  c(
+   "Geschlecht", "Geburtsdatum_XLSX", "Geburtsdatum_Tag", "Geburtsdatum_Monat", "Geburtsdatum_Jahr",
+   "Groesse_cm", "Masse_kg", "Schulsport_AG", "Vereinsmitglied",
+   "Verein_1", "Verein_2", "Verein_3",
+   "Verein_Woche",
+   "S20_s", "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m1",
+   "Run_54_m_Runden", "Run_Pylonen", "Run_m2",
+   "Anmerkungen")
+
+# 2) Bind across cohorts, clean, and export
+cohort_result <- bind_cohorts(base_path = path,
+                              cohorts = as.character(2017:2025),
+                              search_cols = search_cols)
+
+```
+
+# Inspektion
+
+```{r cohort-inspect, eval=FALSE}
+# 3) quick inspections
+df <-  cohort_result$all_values
+
+# Child counts
+df |> count(Cohort)
+
+df |>
+  filter(Nr.x != Nr.y) |>
+  select(Cohort, File_name,Nr.x, Nr.y) |>
+  print(n = Inf) |>
+  knitr::kable()
+
+# unique child nr
+df |>
+  count(Cohort, Schulnummer, Klassenname, Nr.x) |>
+  filter(n > 1)|>
+  knitr::kable()
+
+```
+
+# Korrektur-Archiv
+
+## Verschobene Zeilen in Tabellenblättern
+- in Tabellenblätter "Schülerprofil" und "TEST-Daten" ware folgende
+  Reihen verschoben, wenn Tabellenblätter reihenweiße verschmolzen werden
+- Fehler wurden in Tabellenblättern korrigiert
+
+```{r err-nr, eval=FALSE}
+# misaligned child date
+df |>
+  filter(Nr.x != Nr.y) |>
+  select(Cohort, File_name,Nr.x, Nr.y) |>
+  print(n = Inf) |>
+  knitr::kable()
+```
+
+
+|Cohort |File_name                                   |Nr.x   |Nr.y   |
+|:------|:-------------------------------------------|:------|:------|
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm01  |3bm08  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm02  |3bm09  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm03  |3bm10  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm04  |3bm11  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm05  |3bm12  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm06  |3bm13  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm07  |3bm14  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm08  |3bm15  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm09  |3bw16  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm10  |3bw17  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm11  |3bw18  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm12  |3bw19  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm13  |3bw20  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm14  |3bw21  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bm15  |3bw22  |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw16  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw17  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw18  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw19  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw20  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw21  |0      |
+|2017   |Daten 3a-3b 2017.xlsx                       |3bw22  |0      |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb4   |geb5   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb5   |geb6   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb6   |geb7   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb7   |geb8   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb8   |geb9   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb9   |geb10  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb10  |geb11  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb11  |geb12  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb12  |geb13  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb13  |geb14  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb14  |geb15  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb15  |geb16  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb16  |geb17  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb17  |geb18  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb18  |geb19  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb19  |geb20  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb20  |geb21  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb21  |geb22  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3a.xlsx |geb22  |0      |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges5   |ges6   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges6   |ges7   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges7   |ges8   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges8   |ges9   |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges9   |ges10  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges10  |ges11  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges11  |ges12  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges12  |ges14  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges13  |ges15  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges14  |ges16  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges15  |ges17  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges16  |ges18  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges17  |ges19  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges18  |ges20  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges19  |ges22  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges20  |ges23  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges21  |ges24  |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges22  |0      |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges23  |0      |
+|2017   |Dateneingabe_Georgenschule - Klasse_3b.xlsx |ges24  |0      |
+|2017   |Dateneingabe_Nazza - Klasse_3b.xlsx         |3b15   |3b16   |
+|2017   |Dateneingabe_Nazza - Klasse_3b.xlsx         |3b16   |3b17   |
+|2017   |Dateneingabe_Nazza - Klasse_3b.xlsx         |3b17   |3b18   |
+|2017   |Dateneingabe_Nazza - Klasse_3b.xlsx         |3b18   |3b19   |
+|2017   |Dateneingabe_Nazza - Klasse_3b.xlsx         |3b19   |0      |
+|2017   |Herressen_Sulzbach_Daten.xlsx               |HSAP22 |HSAP23 |
+|2017   |Herressen_Sulzbach_Daten.xlsx               |HSAP23 |HSAP24 |
+|2017   |Herressen_Sulzbach_Daten.xlsx               |HSAP24 |HSAP26 |
+|2017   |Herressen_Sulzbach_Daten.xlsx               |HSAP26 |HSAP27 |
+|2017   |Herressen_Sulzbach_Daten.xlsx               |HSAP27 |0      |
+|2017   |Isseroda.xlsx                               |ISS07  |ISS08  |
+|2017   |Isseroda.xlsx                               |ISS08  |ISS09  |
+|2017   |Isseroda.xlsx                               |ISS09  |ISS10  |
+|2017   |Isseroda.xlsx                               |ISS10  |ISS11  |
+|2017   |Isseroda.xlsx                               |ISS11  |ISS12  |
+|2017   |Isseroda.xlsx                               |ISS12  |ISS13  |
+|2017   |Isseroda.xlsx                               |ISS13  |ISS14  |
+|2017   |Isseroda.xlsx                               |ISS14  |ISS15  |
+|2017   |Isseroda.xlsx                               |ISS15  |ISS16  |
+|2017   |Isseroda.xlsx                               |ISS16  |ISS17  |
+|2017   |Isseroda.xlsx                               |ISS17  |ISS18  |
+|2017   |Isseroda.xlsx                               |ISS18  |ISS19  |
+|2017   |Isseroda.xlsx                               |ISS19  |ISS20  |
+|2017   |Isseroda.xlsx                               |ISS20  |ISS21  |
+|2017   |Isseroda.xlsx                               |ISS21  |ISS22  |
+|2017   |Isseroda.xlsx                               |ISS22  |0      |
+|2017   |Mellingen1.xlsx                             |Mel20  |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |3a     |7a     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |4a     |8a     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |5a     |9a     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |6a     |10a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |7a     |11a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |8a     |13a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |9a     |14a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |10a    |15a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |11a    |16a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |12a    |18a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |13a    |20a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |14a    |25a    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |15a    |1b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |16a    |2b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |17a    |3b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |18a    |4b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |19a    |5b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |20a    |6b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |21a    |7b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |22a    |8b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |23a    |9b     |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |24a    |10b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |25a    |12b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |26a    |13b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |1b     |14b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |2b     |15b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |3b     |16b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |4b     |18b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |5b     |19b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |6b     |20b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |7b     |22b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |8b     |24b    |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |9b     |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |10b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |11b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |12b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |13b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |14b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |15b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |16b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |17b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |18b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |19b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |20b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |21b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |22b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |23b    |0      |
+|2017   |Staatliche Grundschule Am Hexenberg.xlsx    |24b    |0      |
+|2022   |75520_GS_Armin_Mueller_Stahl.xlsx           |8      |7      |
+|2022   |75520_GS_Armin_Mueller_Stahl.xlsx           |9      |8      |
+|2022   |75520_GS_Armin_Mueller_Stahl.xlsx           |10     |9      |
+|2022   |75520_GS_Armin_Mueller_Stahl.xlsx           |11     |10     |
+
+
+## Nicht eindeutige Klassennamen je Schule 
+- Schule 15797 im Schuljahr 2021/2022: Klassenname 3b mehrmals vergeben
+
+
+> # unique children
++ df |>
++   count(Cohort, Schulnummer, Klassenname, Nr.x) |>
++   filter(n > 1)|>
++   knitr::kable()
++ 
+
+|Cohort |Schulnummer |Klassenname |Nr.x |  n|
+|:------|:-----------|:-----------|:----|--:|
+|2021   |15797       |3b          |1    |  2|
+|2021   |15797       |3b          |10   |  2|
+|2021   |15797       |3b          |11   |  2|
+|2021   |15797       |3b          |12   |  2|
+|2021   |15797       |3b          |13   |  2|
+|2021   |15797       |3b          |14   |  2|
+|2021   |15797       |3b          |15   |  2|
+|2021   |15797       |3b          |16   |  2|
+|2021   |15797       |3b          |17   |  2|
+|2021   |15797       |3b          |18   |  2|
+|2021   |15797       |3b          |19   |  2|
+|2021   |15797       |3b          |2    |  2|
+|2021   |15797       |3b          |20   |  2|
+|2021   |15797       |3b          |3    |  2|
+|2021   |15797       |3b          |4    |  2|
+|2021   |15797       |3b          |5    |  2|
+|2021   |15797       |3b          |6    |  2|
+|2021   |15797       |3b          |7    |  2|
+|2021   |15797       |3b          |8    |  2|
+|2021   |15797       |3b          |9    |  2|

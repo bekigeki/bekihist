@@ -17,5 +17,7 @@ A tibble with all columns as character.
 }
 \description{
 Generic reader used for both profile and test data.
+https://support.microsoft.com/en-us/office/date-systems-in-excel-e7fe7167-48a9-4b96-bb53-5612a800b487
+https://stackoverflow.com/a/3963650
 }
 \keyword{internal}
