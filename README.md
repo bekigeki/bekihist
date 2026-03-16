@@ -10,7 +10,7 @@ The package focuses on:
 
 ## Installation
 
-You can install the development version of **bekihist** from GitHub:
+Installation of the development version of **bekihist** from GitHub:
 
 ```r
 ´´´`````r```r
