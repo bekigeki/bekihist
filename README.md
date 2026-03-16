@@ -28,11 +28,9 @@ vignette("getting-started")
 
 # See how to bind a public-use or scientific-use file for
 # further processing
-vignette("public-use-file")
+vignette("scientific-use-file")
 
-# Scientific-use file upon request
-# Description available:
-help(beki_scientific_use_file)
+# beki_scientific_use_file currently upon request only
 
 ``` 
 
