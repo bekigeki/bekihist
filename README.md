@@ -12,9 +12,6 @@ The package focuses on:
 
 Installation of the development version of **bekihist** from GitHub:
 
-```r
-´´´`````r```r
-
 ```{r 2025, eval=FALSE}
 # install.packages("pak")  # or remotes, devtools, etc.
 pak::pak("bekigeki/bekihist")
@@ -31,7 +28,6 @@ vignette("getting-started")
 # See how to bind a public-use or scientific-use file for
 # further processing
 vignette("public-use-file")
-
 ``` 
 
 ## License
