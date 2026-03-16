@@ -57,7 +57,8 @@
 #' }
 #'
 #' @export
-bind_cohorts <- function(base_path, cohorts,
+bind_cohorts <- function(base_path,
+                         cohorts,
                          search_cols =  c(
     "Geschlecht", "Geburtsdatum_XLSX", "Geburtsdatum_Tag", "Geburtsdatum_Monat", "Geburtsdatum_Jahr",
     "Groesse_cm", "Masse_kg", "Schulsport_AG", "Vereinsmitglied",
@@ -102,3 +103,90 @@ saveRDS(all_cohorts,        file.path(base_path, "all_cohorts_raw.rds"))
     all_values  = all_values
   )
 }
+
+#' Bind multiple Excel masks into one table
+#'
+#' Reads all \code{.xlsx} BeKiGeKi Excel masks in a directory (optionally
+#' recursively), processes each file with \code{read_sheets_in_file()},
+#' performs optional file-coverage checks, and optionally writes CSV/RDS
+#' snapshot files.
+#'
+#' If \code{path_csv} or \code{path_rds} is non-NULL, the corresponding
+#' snapshot is written.
+#'
+#' @param path_in Character. Directory containing \code{*.xlsx} Excel masks.
+#' @param layout List. Layout specification for this cohort (as used
+#'   by \code{read_sheets_in_file()}).
+#' @param path_csv Character or NULL. Path to CSV snapshot file. If NULL,
+#'   no CSV is written.
+#' @param path_rds Character or NULL. Path to RDS snapshot file. If NULL,
+#'   no RDS is written.
+#' @param recursive Logical. If TRUE, search \code{path_in} recursively.
+#' @param check_files Character. One of \code{"none"}, \code{"warn"},
+#'   \code{"error"} to control the post-hoc check that all input files are
+#'   represented in the data.
+#'
+#' @return A tibble with aggregated data from all files.
+#' @export
+#' @examples
+#' \dontrun{
+#' # Just bind, no snapshots
+#' d <- bind_xlsx_files_in_dir(
+#'   path_in  = "./in/",
+#'   layout   = layout_2025
+#' )
+#'
+#' # Bind and write CSV/RDS snapshots
+#' d <- bind_xlsx_files_in_dir(
+#'   path_in   = "./in/",
+#'   layout    = layout_2025,
+#'   path_csv  = "./tmp/bind_xlsx_files_in_dir.csv",
+#'   path_rds  = "./tmp/bind_xlsx_files_in_dir.rds"
+#' )
+#' }
+bind_xlsx_files_in_dir <- function(path_in  = "./tidy/",
+                              layout,
+                              path_csv = NULL,
+                              path_rds = NULL,
+                              recursive   = TRUE,
+                              check_files = c("none", "warn", "error")) {
+  check_files <- match.arg(check_files)
+
+  file_names <- list.files(
+    path       = path_in,
+    pattern    = "^[^~].+\\.xlsx$",
+    full.names = TRUE,
+    recursive  = recursive
+  )
+
+  N <- length(file_names)
+  if (N == 0L) {
+    stop("No .xlsx files found in ", path_in)
+  }
+
+  dfs <- vector("list", N)
+  for (n in seq_along(file_names)) {
+    cat(sprintf("%d/%d files processed\n", n, N))
+    dfs[[n]] <- read_sheets_in_file(
+      file   = file_names[n],
+      layout = layout
+    )
+  }
+
+  d <- dplyr::bind_rows(dfs)
+
+  check_files_covered(file_names, d, file_col = "File_name",
+                      mode = check_files)
+
+  if (!is.null(path_csv)) {
+    dir.create(dirname(path_csv), showWarnings = FALSE, recursive = TRUE)
+    utils::write.csv(d, file = path_csv, row.names = FALSE)
+  }
+  if (!is.null(path_rds)) {
+    dir.create(dirname(path_rds), showWarnings = FALSE, recursive = TRUE)
+    saveRDS(d, file = path_rds)
+  }
+
+  d
+}
+

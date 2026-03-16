@@ -346,7 +346,7 @@
 #' @param cohort Character or numeric, e.g. "2025".
 #'
 #' @return A layout list suitable for \code{read_sheets_in_file()} or
-#'   \code{bind_files_in_dir()}.
+#'   \code{bind_xlsx_files_in_dir()}.
 #' @export
 get_layout <- function(cohort) {
   key <- as.character(cohort)

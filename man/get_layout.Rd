@@ -11,7 +11,7 @@ get_layout(cohort)
 }
 \value{
 A layout list suitable for \code{read_sheets_in_file()} or
-\code{bind_files_in_dir()}.
+\code{bind_xlsx_files_in_dir()}.
 }
 \description{
 Returns the layout specification for a given cohort.

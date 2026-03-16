@@ -2,7 +2,7 @@
 
 export(assert_unique_key)
 export(bind_cohorts)
-export(bind_files_in_dir)
+export(bind_xlsx_files_in_dir)
 export(check_files_covered)
 export(deduplicate_xlsx_files_in_dir)
 export(get_layout)

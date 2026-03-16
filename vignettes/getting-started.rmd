@@ -107,7 +107,7 @@ str(d)
 ## Beispiel: Mehrere Schulen
 
 ```{r dir, eval=FALSE}
-a <- bind_files_in_dir(
+a <- bind_xlsx_files_in_dir(
   path_in = system.file("data", "2025", package = "bekihist"), 
   layout =  layout_2025)
 str(a)
