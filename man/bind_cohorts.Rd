@@ -7,11 +7,12 @@
 bind_cohorts(
   base_path,
   cohorts,
+  file_name_prefix = "beki_scientific_use_file",
   search_cols = c("Geschlecht", "Geburtsdatum_XLSX", "Geburtsdatum_Tag",
     "Geburtsdatum_Monat", "Geburtsdatum_Jahr", "Groesse_cm", "Masse_kg", "Schulsport_AG",
     "Vereinsmitglied", "Verein_1", "Verein_2", "Verein_3", "Verein_Woche", "S20_s",
-    "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m1", "Run_54_m_Runden", "Run_Pylonen",
-    "Run_m2", "Anmerkungen")
+    "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m_1", "Run_54_m_Runden", "Run_Pylonen",
+    "Run_m_2", "Anmerkungen")
 )
 }
 \arguments{
@@ -22,6 +23,13 @@ RDS files \code{<cohort>.rds} previously created by
 \item{cohorts}{Character vector. Cohort identifiers (typically years such as
 \code{c("2017", "2018")}) used to construct the input RDS filenames
 \code{file.path(base_path, paste0(cohorts, ".rds"))}.}
+
+\item{file_name_prefix}{Character scalar. Prefix used for the output
+filenames \code{<prefix>.rds}, \code{<prefix>.csv}, and
+\code{<prefix>.xlsx} written into \code{base_path}.}
+
+\item{search_cols}{Character vector. Names of columns that are inspected to
+decide whether a row contains at least one non-missing “real” value.}
 }
 \value{
 A named list with two tibbles:
@@ -51,23 +59,25 @@ measurement and questionnaire variables (e.g. anthropometrics, sports
 results, club membership) is non-missing, thereby removing purely
 prefilled/blank rows.
 
-The function writes four snapshot files into \code{base_path}:
+A timestamp column \code{Datensatz_erstellt_am} is added and set to the
+current date via \code{Sys.Date()}.
+
+The function writes three snapshot files into \code{base_path}, using
+\code{file_name_prefix} to construct the filenames:
 \itemize{
-\item \code{all_cohorts_raw.rds}, \code{all_cohorts_raw.csv}:
-full bound data across cohorts before row filtering.
-\item \code{all_cohorts_filtered.rds}, \code{all_cohorts_filtered.csv}:
-filtered data with only rows containing at least one real value in the
-key columns.
-}
-It also writes an Excel export \code{all_cohorts_filtered.xlsx} using
+\item \code{<prefix>.rds}: Filtered data as an RDS file.
+\item \code{<prefix>.csv}: Filtered data as a CSV file (UTF-8).
+\item \code{<prefix>.xlsx}: Filtered data as an Excel workbook via
 \pkg{writexl}.
+}
 }
 \examples{
 \dontrun{
 # Bind, clean, and export cohorts 2017 and 2018
 res <- bind_cohorts(
-  base_path = "~/beki/data-raw/",
-  cohorts   = c("2017", "2018")
+  base_path        = "~/beki/data-raw/",
+  cohorts          = c("2017", "2018"),
+  file_name_prefix = "beki_scientific_use_file"
 )
 
 res$all_cohorts  # raw union of all cohorts

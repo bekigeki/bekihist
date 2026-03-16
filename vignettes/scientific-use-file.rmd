@@ -1,8 +1,8 @@
 ---
-title: "public-usefile: Dokumentation zur Erstellung eines public use files jahrgangsübergreifender rohwerte"
+title: "scientific-usefile: Dokumentation zur Erstellung eines public- oder scientific-use files jahrgangsübergreifender rohwerte"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{public-usefile: Dokumentation zur Erstellung eines public use files jahrgangsübergreifender rohwerte}
+  %\VignetteIndexEntry{scientific-usefile: Dokumentation zur Erstellung eines public- oder scientific-use files jahrgangsübergreifender rohwerte}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,21 +17,21 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(bekihist)
 library(dplyr)
+library(purrr)
+library(readr)
+
 ```
 # Einleitung
 
 Dieses Vignette zeigt, wie die XLSX-Dateien jahrgangsübergreifend eingelesen und
 als csv- und rds-Datei zur weiteren Bearbeitung zwischengespeichert werden sowie der Allgemeinheit als
-public usefile zur Verfügung gestellt werden.
+public or scientific usefile zur Verfügung gestellt werden.
 
 # Kohorten-Ordner einlesen
 
 - ).
 
 ```{r loop, eval=FALSE}
-library(dplyr)
-library(purrr)
-library(readr)
 
 path    <- system.file("data-raw", package = "bekihist")
 
@@ -70,13 +70,15 @@ search_cols =  c(
    "Groesse_cm", "Masse_kg", "Schulsport_AG", "Vereinsmitglied",
    "Verein_1", "Verein_2", "Verein_3",
    "Verein_Woche",
-   "S20_s", "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m1",
-   "Run_54_m_Runden", "Run_Pylonen", "Run_m2",
+   "S20_s", "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m_1",
+   "Run_54_m_Runden", "Run_Pylonen", "Run_m_2",
    "Anmerkungen")
 
 # 2) Bind across cohorts, clean, and export
-cohort_result <- bind_cohorts(base_path = path,
-                              cohorts = as.character(2017:2025),
+cohorts <- as.character(2017:2025)
+suf <- bind_cohorts(base_path = path,
+                              cohorts = cohorts,
+                              file_name_prefix = "beki_scientific_use_file", 
                               search_cols = search_cols)
 
 ```
@@ -85,7 +87,7 @@ cohort_result <- bind_cohorts(base_path = path,
 
 ```{r cohort-inspect, eval=FALSE}
 # 3) quick inspections
-df <-  cohort_result$all_values
+df <-  suf$all_values
 
 # Child counts
 df |> count(Cohort)

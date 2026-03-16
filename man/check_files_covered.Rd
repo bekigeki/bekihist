@@ -7,7 +7,7 @@
 check_files_covered(
   file_names,
   d,
-  file_col = "File_name",
+  file_col = "XLSX_Dateiname",
   mode = c("warn", "error", "none")
 )
 }

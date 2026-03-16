@@ -1,7 +1,8 @@
 # bekihist
 
-Tools for binding BeKiGeKi Excel “masks”
-into tidy R data frames for research and reporting.
+Tools for deduplicating and importing BeKiGeKi Excel masks from multiple cohorts into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
+
+Die Funktions- und Datensatzdokumentation des Pakets ist auf Deutsch verfasst.
 
 The package focuses on:
 - Reading cohort-specific Excel templates
@@ -28,6 +29,11 @@ vignette("getting-started")
 # See how to bind a public-use or scientific-use file for
 # further processing
 vignette("public-use-file")
+
+# Scientific-use file upon request
+# Description available:
+help(beki_scientific_use_file)
+
 ``` 
 
 ## License

@@ -12,7 +12,7 @@
 #' @return Invisibly, \code{NULL}.
 #' @keywords internal
 #' @export
-check_files_covered <- function(file_names, d, file_col = "File_name",
+check_files_covered <- function(file_names, d, file_col = "XLSX_Dateiname",
                                 mode = c("warn", "error", "none")) {
   mode <- match.arg(mode)
 

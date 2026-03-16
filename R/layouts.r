@@ -31,7 +31,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -66,7 +66,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -102,7 +102,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -138,7 +138,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -174,7 +174,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -210,7 +210,7 @@
       sheet   = 3,
       range   = "C17:N167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_54_m_Runden", "Run_Pylonen","Run_m2" ,"Anmerkungen")
+                   "Star_s","Run_m_1", "Run_54_m_Runden", "Run_Pylonen","Run_m_2" ,"Anmerkungen")
     )
   ),
   
@@ -250,7 +250,7 @@
       sheet   = 3,
       range   = "A11:J167",
       colnames = c("Nr","Inklusion","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_Abbruch", "Anmerkungen")
+                   "Star_s","Run_m_1", "Run_Abbruch", "Anmerkungen")
     )
   ),
   
@@ -291,7 +291,7 @@
       sheet   = 3,
       range   = "A11:J167",
       colnames = c("Nr","KME_GE","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_Abbruch", "Anmerkungen")
+                   "Star_s","Run_m_1", "Run_Abbruch", "Anmerkungen")
     )
   ),
   
@@ -332,7 +332,7 @@
       sheet   = 3,
       range   = "A11:J167",
       colnames = c("Nr","KME_GE","S20_s","BPT_m","SLJ_cm","OLB_s",
-                   "Star_s","Run_m1", "Run_Abbruch", "Anmerkungen")
+                   "Star_s","Run_m_1", "Run_Abbruch", "Anmerkungen")
     )
   )
 )

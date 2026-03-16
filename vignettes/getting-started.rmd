@@ -79,8 +79,7 @@ file <- system.file("data", "2025", "2025-B1.xlsx", package = "bekihist")
 
 df_schule <- read_school_info_generic(
   file = file,
-  spec = layout_2025$school) |>
-  dplyr::select(-Dir_name) # Pfad verstecken
+  spec = layout_2025$school) 
 str(df_schule)
 ```
 ### Motorik-Testdaten
@@ -100,8 +99,7 @@ str(df_profil)
 
 ```{r all}
 d <- read_sheets_in_file(file = file, 
-                    layout = layout_2025) |>
-  dplyr::select(-Dir_name) # Pfad verstecken
+                    layout = layout_2025) 
 str(d)
 ```
 ## Beispiel: Mehrere Schulen
@@ -195,8 +193,7 @@ get_layout("2024")
 
 read_sheets_in_file(
   file = system.file("data", "2024", "2024-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2024")) |>
-  dplyr::select(-Dir_name) |>
+  layout = get_layout("2024")) 
   str()
 
 ``` 

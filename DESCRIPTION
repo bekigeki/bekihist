@@ -1,14 +1,18 @@
 Package: bekihist
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Tools for Binding BeKiGeKi Excel “masks” into R data frames
+Version: 0.0.0.9001
 Authors@R: 
     person("Toni", "Wöhrl", , "toni.woehrl@uni-erfurt.de", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: MIT + file LICENSE
+Description: Tools for deduplicating and importing BeKiGeKi Excel masks from multiple cohorts into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
+License: MIT 
 Encoding: UTF-8
+Language: en, de
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Depends: 
+    R (>= 3.5)
+LazyData: true

@@ -33,8 +33,8 @@ read_table_generic <- function(file, spec) {
     dplyr::mutate(
       dplyr::across(dplyr::everything(), as.character),
       .row              = dplyr::row_number(),
-      date_origin_xlsx  = date_origin_raw,
-      date_origin_fixed = date_origin
+      XLSX_date_origin_import  = date_origin_raw,
+      XLSX_date_origin_fixed = date_origin
     )
 }
 
@@ -67,8 +67,8 @@ read_school_info_generic <- function(file, spec) {
   vals <- lapply(spec$cells, get_cell)
   names(vals) <- names(spec$cells)
 
-  vals$File_name <- basename(file)
-  vals$Dir_name  <- dirname(file)
+  vals$XLSX_Dateiname <- basename(file)
+ # vals$Dir_name  <- dirname(file)
 
   tibble::as_tibble(vals) |>
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
@@ -103,7 +103,7 @@ read_sheets_in_file <- function(file, layout) {
   school <- read_school_info_generic(file, layout$school)
 
   tests_reduced <- tests |>
-    dplyr::select(-date_origin_xlsx, -date_origin_fixed)
+    dplyr::select(-XLSX_date_origin_import, -XLSX_date_origin_fixed)
 
 
   out <- dplyr::left_join(profile, tests_reduced, by = layout$join_col) |>
@@ -111,8 +111,8 @@ read_sheets_in_file <- function(file, layout) {
       dplyr::across(dplyr::everything(), as.character),
       !!!as.list(school[1, , drop = FALSE]),
       Cohort = as.character(layout$Cohort),
-      date_origin_xlsx = dplyr::first(profile$date_origin_xlsx),
-      date_origin_fixed = dplyr::first(profile$date_origin_fixed)
+      XLSX_date_origin_import = dplyr::first(profile$XLSX_date_origin_import),
+      XLSX_date_origin_fixed  = dplyr::first(profile$XLSX_date_origin_fixed)
     )
   out
 }

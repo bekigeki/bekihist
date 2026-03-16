@@ -10,15 +10,20 @@
 #' @param cohorts Character vector. Cohort identifiers (typically years such as
 #'   \code{c("2017", "2018")}) used to construct the input RDS filenames
 #'   \code{file.path(base_path, paste0(cohorts, ".rds"))}.
+#' @param file_name_prefix Character scalar. Prefix used for the output
+#'   filenames \code{<prefix>.rds}, \code{<prefix>.csv}, and
+#'   \code{<prefix>.xlsx} written into \code{base_path}.
+#' @param search_cols Character vector. Names of columns that are inspected to
+#'   decide whether a row contains at least one non-missing “real” value.
 #'
-#' @return A named list with two tibbles:
-#' \describe{
-#'   \item{\code{all_cohorts}}{Row-bound union of all cohort tables, using the
-#'     union of all columns and filling missing cells with \code{NA}.}
-#'   \item{\code{all_values}}{Subset of \code{all_cohorts} restricted to rows
-#'     where at least one of the key measurement/metadata columns contains a
-#'     non-missing value.}
-#' }
+#' @return A named list with two tibbles: 
+#'   \describe{
+#'     \item{\code{all_cohorts}}{Row-bound union of all cohort tables, using the
+#'       union of all columns and filling missing cells with \code{NA}.}
+#'     \item{\code{all_values}}{Subset of \code{all_cohorts} restricted to rows
+#'       where at least one of the key measurement/metadata columns contains a
+#'       non-missing value.}
+#'   }
 #'
 #' @details
 #' This helper assumes that for each element of \code{cohorts} there exists a
@@ -33,23 +38,25 @@
 #' results, club membership) is non-missing, thereby removing purely
 #' prefilled/blank rows.
 #'
-#' The function writes four snapshot files into \code{base_path}:
+#' A timestamp column \code{Datensatz_erstellt_am} is added and set to the
+#' current date via \code{Sys.Date()}.
+#'
+#' The function writes three snapshot files into \code{base_path}, using
+#' \code{file_name_prefix} to construct the filenames:
 #' \itemize{
-#'   \item \code{all_cohorts_raw.rds}, \code{all_cohorts_raw.csv}:
-#'     full bound data across cohorts before row filtering.
-#'   \item \code{all_cohorts_filtered.rds}, \code{all_cohorts_filtered.csv}:
-#'     filtered data with only rows containing at least one real value in the
-#'     key columns.
+#'   \item \code{<prefix>.rds}: Filtered data as an RDS file.
+#'   \item \code{<prefix>.csv}: Filtered data as a CSV file (UTF-8).
+#'   \item \code{<prefix>.xlsx}: Filtered data as an Excel workbook via
+#'     \pkg{writexl}.
 #' }
-#' It also writes an Excel export \code{all_cohorts_filtered.xlsx} using
-#' \pkg{writexl}.
 #'
 #' @examples
 #' \dontrun{
 #' # Bind, clean, and export cohorts 2017 and 2018
 #' res <- bind_cohorts(
-#'   base_path = "~/beki/data-raw/",
-#'   cohorts   = c("2017", "2018")
+#'   base_path        = "~/beki/data-raw/",
+#'   cohorts          = c("2017", "2018"),
+#'   file_name_prefix = "beki_scientific_use_file"
 #' )
 #'
 #' res$all_cohorts  # raw union of all cohorts
@@ -59,13 +66,14 @@
 #' @export
 bind_cohorts <- function(base_path,
                          cohorts,
+                         file_name_prefix = "beki_scientific_use_file", 
                          search_cols =  c(
     "Geschlecht", "Geburtsdatum_XLSX", "Geburtsdatum_Tag", "Geburtsdatum_Monat", "Geburtsdatum_Jahr",
     "Groesse_cm", "Masse_kg", "Schulsport_AG", "Vereinsmitglied",
     "Verein_1", "Verein_2", "Verein_3",
     "Verein_Woche",
-    "S20_s", "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m1",
-    "Run_54_m_Runden", "Run_Pylonen", "Run_m2",
+    "S20_s", "BPT_m", "SLJ_cm", "OLB_s", "Star_s", "Run_m_1",
+    "Run_54_m_Runden", "Run_Pylonen", "Run_m_2",
     "Anmerkungen")
     ) {
   # 1) RDS paths per cohort
@@ -82,25 +90,27 @@ bind_cohorts <- function(base_path,
     dplyr::mutate(dplyr::across(
       where(is.character),
       ~ ifelse(. %in% c("--wählen--", ""), NA, .)
-    ))
+    )) |>
+    dplyr::mutate(Datensatz_erstellt_am = Sys.Date()) # Spalte "Datensatz_erstellt_am"
   
-  # 5) Keep only rows where at least one of the relevant columns has data  
+  # 5) Keep only rows where at least one of the relevant columns has data and sort columns alphabetically
   all_values <- all_cohorts_clean %>%
     dplyr::filter(dplyr::if_any(dplyr::any_of(search_cols), ~ !is.na(.)))
 
+  # 6) Sort columns alphabetically
+  all_values_alph <- all_values[ , order(names(all_values))]
   
-  # 6) Save combined data (full and filtered)
-saveRDS(all_cohorts,        file.path(base_path, "all_cohorts_raw.rds"))
-  readr::write_csv(all_cohorts, file.path(base_path, "all_cohorts_raw.csv"))
+  # 7) Save combined data (filtered)
+  # saveRDS(all_cohorts,        file.path(base_path, "all_cohorts_raw.rds"))
+  # readr::write_csv(all_cohorts, file.path(base_path, "all_cohorts_raw.csv"))
   
-  
-  saveRDS(all_values,         file.path(base_path, "all_cohorts.rds"))
-  readr::write_csv(all_values, file.path(base_path, "all_cohorts.csv"))
-  writexl::write_xlsx(all_values, file.path(base_path, "all_cohorts.xlsx"))
+  saveRDS(all_values_alph,         file.path(base_path,paste0(file_name_prefix, ".rds")))
+  readr::write_csv(all_values_alph, file.path(base_path,paste0(file_name_prefix, ".csv")))
+  writexl::write_xlsx(all_values_alph, file.path(base_path,paste0(file_name_prefix, ".xlsx")))
   
   list(
     all_cohorts = all_cohorts,
-    all_values  = all_values
+    all_values  = all_values_alph
   )
 }
 
@@ -175,7 +185,7 @@ bind_xlsx_files_in_dir <- function(path_in  = "./tidy/",
 
   d <- dplyr::bind_rows(dfs)
 
-  check_files_covered(file_names, d, file_col = "File_name",
+  check_files_covered(file_names, d, file_col = "XLSX_Dateiname",
                       mode = check_files)
 
   if (!is.null(path_csv)) {
