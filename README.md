@@ -24,11 +24,12 @@ pak::pak("bekigeki/bekihist")
 library(bekihist)
 
 # See the introductory vignette for binding files
-vignette("getting-started")
+vignette("layouts-usage")
 
 # See how to bind a public-use or scientific-use file for
 # further processing
 vignette("scientific-use-file")
+
 
 # beki_scientific_use_file currently upon request only
 
