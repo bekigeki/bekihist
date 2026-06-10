@@ -1,14 +1,15 @@
-#' BEKI Scientific-Use-File: derzeit nur auf Anfrage
+#' BeKiGeKi Scientific-Use-File: derzeit nur auf Anfrage
 #'
-#' Zusammengeführter BEKI-Kohortendatensatz, gefiltert auf Zeilen mit
+#' Zusammengeführter BeKiGeKi-Datensatz, gefiltert auf Zeilen mit
 #' mindestens einem nicht-fehlenden Messwert oder zentralen Fragebogenmerkmal. 
 #'
-#' @format Ein Tibble mit 85.388 Zeilen und 50 Variablen:
+#' @format Ein Tibble mit 85751 Zeilen und 51 Variablen (Stand 2026-06-10):
 #' \describe{
 #'   \item{.row}{Zeilenindex aus dem ursprünglichen Import innerhalb jeder Excel-Datei.}
 #'   \item{Anmerkungen}{Freitext-Kommentare der Testleiter:innen.}
 #'   \item{BPT_m}{Weite des Medizinballstoßes in Metern (als Zeichenkette, numerischer Wert).}
-#'   \item{Cohort}{Kohortenkennung (z.B. \code{"2017"}, \code{"2018"}).}
+#'   \item{School_year}{Kennung des Schuljahres, in dem der Bewegungs-Check durchgeführt wurde.  (z.B. \code{"2017_18"}, \code{"2018_19"}).}
+#'   \item{Erhebungswelle}{Kennung der Erhebungswelle innerhalb des BeKiGeKi-Programms (z.B. \code{"1"}, \code{"2"}).}
 #'   \item{Datensatz_erstellt_am}{Datum, an dem dieser kombinierte Datensatz erzeugt wurde (\code{Date}).}
 #'   \item{Einverstaendnis_fehlend}{Marker, dass eine schriftliche Einwilligung fehlt.}
 #'   \item{Geburtsdatum_Jahr}{Geburtsjahr (Zeichenkette, vierstellige Jahreszahl).}
@@ -21,24 +22,24 @@
 #'   \item{Klassenname}{Bezeichnung des Klassenames innerhalb der Schule (z.B. \code{"3a"} für erste 3. Klasse).}
 #'   \item{Klassenstaerke}{Anzahl der Schüler:innen in der Klasse.}
 #'   \item{Klassenstufenstaerke}{Anzahl der Schüler:innen in der Klassenstufe an der Schule.}
-#'   \item{KME_GE}{Neue Kennung für Inklusion ab Cohort == 2024 (Förderschwerpunkt körperliche und motorische Entwicklung und geistige Entwicklung).}
+#'   \item{KME_GE}{Neue Kennung für Inklusion ab Erhebungsjahr == 2024 (Förderschwerpunkt körperliche und motorische Entwicklung und geistige Entwicklung).}
 #'   \item{Masse_kg}{Körpermasse in Kilogramm (als Zeichenkette, numerischer Wert).}
 #'   \item{Nr.x}{Pseudonymisierte Teilnehmerkennung (aus den Roh-Excel-Dateiblatt "Schülerprofil" übernommen).}
 #'   \item{Nr.y}{Pseudonymisierte Teilnehmerkennung (aus den Roh-Excel-Dateiblatt "Testdaten" übernommen)).}
 #'   \item{OLB_s}{Einbeinstand-Dauer in Sekunden (als Zeichenkette, numerischer Wert).}
 #'   \item{Postleitzahl}{Postleitzahl des Schulstandorts.}
-#'   \item{Run_54_m_Runden}{Anzahl absolvierte Runden im 9-Minuten-Lauf (54-m-Runden, bis Cohort == 2022).}
+#'   \item{Run_54_m_Runden}{Anzahl absolvierte Runden im 9-Minuten-Lauf (54-m-Runden, bis Erhebungsjahr == 2022).}
 #'   \item{Run_Abbruch}{Kennzeichnung, dass der 9-Minuten-Lauf abgebrochen wurde.}
 #'   \item{Run_m_1}{zurückgelegte Strecke in Metern im 9-Minuten-Lauf (Selbsteingabe).}
-#'   \item{Run_m_2}{zurückgelegte Strecke in Metern im 9-Minuten-Lauf (in Excel aus Run_54_m_Runden und Run_Pylonen berechnet, bis Cohort==2022).}
-#'   \item{Run_Pylonen}{Anzahl passierter Pylonen im Ausdauertest (bis Cohort == 2022).}
+#'   \item{Run_m_2}{zurückgelegte Strecke in Metern im 9-Minuten-Lauf (in Excel aus Run_54_m_Runden und Run_Pylonen berechnet, bis Erhebungsjahr==2022).}
+#'   \item{Run_Pylonen}{Anzahl passierter Pylonen im Ausdauertest (bis Erhebungsjahr == 2022).}
 #'   \item{S20_s}{20-m-Sprintzeit in Sekunden (als Zeichenkette, numerischer Wert).}
 #'   \item{Schulname}{Offizieller Name der Schule.}
 #'   \item{Schulnummer}{Institutionskennziffer der Schule.}
 #'   \item{Schulort}{Ort der Schule.}
-#'   \item{Schulsport_1}{Erste angegebene Schulsport-AG (z.B. \code{"Tanzen/Aerobic"}, \code{"Skisport"}, \code{"Große Sportspiele*"}, bis Cohort == 2022).}
-#'   \item{Schulsport_2}{Zweite Schulsport-AG (bis Cohort == 2022).}
-#'   \item{Schulsport_3}{Dritte Schulsport-AG (bis Cohort == 2022).}
+#'   \item{Schulsport_1}{Erste angegebene Schulsport-AG (z.B. \code{"Tanzen/Aerobic"}, \code{"Skisport"}, \code{"Große Sportspiele*"}, bis Erhebungsjahr == 2022).}
+#'   \item{Schulsport_2}{Zweite Schulsport-AG (bis Erhebungsjahr == 2022).}
+#'   \item{Schulsport_3}{Dritte Schulsport-AG (bis Erhebungsjahr == 2022).}
 #'   \item{Schulsport_AG}{Merkmal für die Teilnahme an einer Schulsport-AG (\code{"ja"} / \code{"nein"}).}
 #'   \item{SLJ_cm}{Weite des Standweitsprungs in Zentimetern (als Zeichenkette, numerischer Wert).}
 #'   \item{Star_s}{Zeit im Sternlauf in Sekunden (als Zeichenkette, numerischer Wert).}
@@ -65,9 +66,9 @@
 #'
 #' Der Datensatz enthält nur diejenigen Zeilen, in denen mindestens eine
 #' zentrale Mess- oder Fragebogensvariable nicht fehlend ist, entsprechend der
-#' Filterlogik in \code{\link{bind_cohorts}}. 
+#' Filterlogik in \code{\link{bind_school_years}}. 
 #'
-#' @source Aggregierte und harmonisierte BEKI-Kohortendaten aus Thüringer Schulen.
+#' @source BeKiGeKi-Rohdaten aller Erhebungsjahre, zeilenweise zusammengeführt.
 #' @keywords datasets
 #' @docType data
 #' @name beki_scientific_use_file

@@ -2,17 +2,17 @@
 % Please edit documentation in R/layouts.r
 \name{get_layout}
 \alias{get_layout}
-\title{Get a cohort layout}
+\title{Get a school_year layout}
 \usage{
-get_layout(cohort)
+get_layout(school_year)
 }
 \arguments{
-\item{cohort}{Character or numeric, e.g. "2025".}
+\item{school_year}{Character or numeric, e.g. "2025_26".}
 }
 \value{
 A layout list suitable for \code{read_sheets_in_file()} or
 \code{bind_xlsx_files_in_dir()}.
 }
 \description{
-Returns the layout specification for a given cohort.
+Returns the layout specification for a given school_year.
 }

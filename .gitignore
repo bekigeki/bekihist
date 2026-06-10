@@ -13,3 +13,4 @@ inst/doc
 .Rcheck/
 .projectile
 .DS_Store
+/data/*.rda

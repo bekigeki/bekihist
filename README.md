@@ -1,12 +1,12 @@
 # bekihist
 
-Tools for deduplicating and importing BeKiGeKi Excel masks from multiple cohorts into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
+Tools for deduplicating and importing BeKiGeKi Excel masks from multiple school_years into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
 
 Die Funktions- und Datensatzdokumentation des Pakets ist auf Deutsch verfasst.
 
 The package focuses on:
-- Reading cohort-specific Excel templates
-- Binding multiple cohort files
+- Reading school_year-specific layouts
+- Binding multiple school_year Excel files with raw data
 - Producing reproducible CSV/RDS exports for downstream analysis
 
 ## Installation

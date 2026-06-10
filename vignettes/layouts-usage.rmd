@@ -1,8 +1,8 @@
 ---
-title: "getting-started: Design layouts and read cohort specific raw data in xlsx format"
+title: "getting-started: Design layouts and read school_year specific raw data in xlsx format"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{getting-started: Design layouts and read cohort specific raw data in xlsx format}
+  %\VignetteIndexEntry{getting-started: Design layouts and read school_year specific raw data in xlsx format}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,15 +15,15 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(bekihist)
+devtools::load_all()
 library(dplyr)
 ```
 # Einleitung
 
-Dieses Vignette zeigt, wie eigene Layouts für historisch gewachsene BeKiGeKi-Eingabemasken
-definiert und anschließend "kohortenspezifische" (schuljahrspezifische) Rohdaten aus den *.xlsx-Dateien
+Dieses Vignette zeigt, wie Layouts für historisch gewachsene BeKiGeKi-Eingabemasken
+definiert und anschließend (schuljahrspezifische) Rohdaten aus den *.xlsx-Dateien
 eingelesen werden können.
-Anhand einer Beispielkohorte 2025 mit einer benutzerdefinierten Layout-Liste wird das
+Anhand des Beispiel-Erhebungsjahres 2025 Layout-Liste wird das
 Einlesen einzelner Tabellenblätter sowie das Zusammenführen aller relevanten Daten in eine Tabelle demonstriert.
 
 # Layout erstellen
@@ -31,8 +31,13 @@ Einlesen einzelner Tabellenblätter sowie das Zusammenführen aller relevanten D
 ```{r layouts}
 # eigenes Layout definieren
 layout_2025 <- list(
-  Cohort = "2025", 
+  School_year = "2025_26", # must-Info!
   join_col = ".row",
+  # Optionale zusätzliche Spalten, z.B.:
+  extra_cols    = c(
+    Erhebungswelle = "9",
+    Kommentar        = "Neuigkeiten:...."
+  ),
   school = list(
     sheet = 1,
     range = "C3:F14",
@@ -40,7 +45,7 @@ layout_2025 <- list(
       Schulnummer                = c(row = 2, col = 1),
       Klassenname                = c(row = 3, col = 1),
       Version_Eingabemaske       = c(row = 1, col = 4),
-      Anzahl_Kinder_Klassen      = c(row = 4, col = 1),
+      Anzahl_Kinder_Klasse       = c(row = 4, col = 1),
       Anzahl_Kinder_Klassenstufe = c(row = 5, col = 1),
       Testdatum_Jahr             = c(row = 6, col = 3),
       Testdatum_Monat            = c(row = 6, col = 2),
@@ -75,7 +80,7 @@ layout_2025 <- list(
 ### Schul-Informationen
 
 ```{r school-info}
-file <- system.file("data", "2025", "2025-B1.xlsx", package = "bekihist")
+file <- system.file("data", "2025_26", "2025-B1.xlsx", package = "bekihist")
 
 df_schule <- read_school_info_generic(
   file = file,
@@ -106,7 +111,7 @@ str(d)
 
 ```{r dir, eval=FALSE}
 a <- bind_xlsx_files_in_dir(
-  path_in = system.file("data", "2025", package = "bekihist"), 
+  path_in = system.file("data", "2025_26", package = "bekihist"), 
   layout =  layout_2025)
 str(a)
 ```
@@ -120,23 +125,23 @@ str(a)
 
 ## Beispiel 2017
 ```{r 2017, eval=FALSE}
-file <- system.file("data", "2017", "2017-B1.xlsx", package = "bekihist")
+file <- system.file("data", "2017_18", "2017-B1.xlsx", package = "bekihist")
 
-get_layout("2017")
+get_layout("2017_18")
 
 read_sheets_in_file(file = file, 
-                    layout = get_layout("2017"))
+                    layout = get_layout("2017_18"))
 ``` 
 
 
 ## Beispiel 2018
 ```{r 2018, eval=FALSE}
-file <- system.file("data", "2018", "2018-B1.xlsx", package = "bekihist")
+file <- system.file("data", "2018_19", "2018-B1.xlsx", package = "bekihist")
 
-get_layout("2018")
+get_layout("2018_19")
 
 read_sheets_in_file(file = file, 
-                    layout = get_layout("2018")) |> colnames()
+                    layout = get_layout("2018_19")) |> colnames()
 
 ``` 
 
@@ -145,65 +150,65 @@ read_sheets_in_file(file = file,
 
 ## Beispiel 2019
 ```{r 2019, eval=FALSE}
-file <- system.file("data", "2019", "2019-B1.xlsx", package = "bekihist")
-get_layout("2019")
+file <- system.file("data", "2019_20", "2019-B1.xlsx", package = "bekihist")
+get_layout("2019_20")
 
 read_sheets_in_file(file = file, 
-                    layout = get_layout("2019"))
+                    layout = get_layout("2019_20"))
 ``` 
 ## Beispiel 2020
 ```{r 2020, eval=FALSE}
-get_layout("2020")
+get_layout("2020_21")
 
 read_sheets_in_file(
-  file =  system.file("data", "2020", "2020-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2020"))
+  file =  system.file("data", "2020_21", "2020-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2020_21"))
 ``` 
 ## Beispiel 2021
 ```{r 2021, eval=FALSE}
-get_layout("2021")
+get_layout("2021_22")
 
 read_sheets_in_file(
-  file = system.file("data", "2021", "2021-B1.xlsx", package = "bekihist")
-  layout = get_layout("2021"))
+  file = system.file("data", "2021_22", "2021-B1.xlsx", package = "bekihist")
+  layout = get_layout("2021_22"))
 
 ```
 ## Beispiel 2022
 ```{r 2022, eval=FALSE}
-get_layout("2022")
+get_layout("2022_23")
 
 read_sheets_in_file(
-  file = system.file("data", "2022", "2022-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2022"))
+  file = system.file("data", "2022_23", "2022-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2022_23"))
 
 ``` 
 ## Beispiel 2023
 
 ```{r 2023, eval=FALSE}
-get_layout("2023")
+get_layout("2023_24")
 
 str(read_sheets_in_file(
-  file = system.file("data", "2023", "2023-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2023")))
+  file = system.file("data", "2023_24", "2023-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2023_24")))
 
 ``` 
 ## Beispiel 2024
 ```{r 2024, eval=FALSE}
-get_layout("2024")
+get_layout("2024_25")
 
 read_sheets_in_file(
-  file = system.file("data", "2024", "2024-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2024")) 
+  file = system.file("data", "2024_25", "2024-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2024_25")) 
   str()
 
 ``` 
 ## Beispiel 2025
 ```{r 2025, eval=FALSE}
-get_layout("2025")
+get_layout("2025_26")
 
 str(read_sheets_in_file(
-  file = system.file("data", "2025", "2025-B1.xlsx", package = "bekihist"), 
-  layout = get_layout("2025")))
+  file = system.file("data", "2025_26", "2025-B1.xlsx", package = "bekihist"), 
+  layout = get_layout("2025_26")))
 ``` 
 
 

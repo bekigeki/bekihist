@@ -18,6 +18,6 @@ A 1-row tibble with school-level metadata (all character).
 }
 \description{
 Reads header / metadata cells (school, class, date, etc.) defined
-by a cohort-specific layout specification.
+by a school_year-specific layout specification.
 }
 \keyword{internal}

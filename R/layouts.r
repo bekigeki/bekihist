@@ -1,7 +1,8 @@
 .bekihist_layouts <- list(
   
-  `2017` = list(
-    Cohort = "2017", 
+  `2017_18` = list(
+    School_year = "2017_18",
+    extra_cols    = c(Erhebungswelle = "1"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -35,8 +36,9 @@
     )
   ),
   
-  `2018` = list(
-    Cohort = "2018", 
+  `2018_19` = list(
+    School_year = "2018_19",
+    extra_cols    = c(Erhebungswelle = "2"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -70,8 +72,9 @@
     )
   ),
   
-  `2019` = list(
-    Cohort = "2019", 
+  `2019_20` = list(
+    School_year = "2019_20",
+    extra_cols    = c(Erhebungswelle = "3"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -106,8 +109,9 @@
     )
   ),
   
-  `2020` = list(
-    Cohort = "2020", 
+  `2020_21` = list(
+    School_year = "2020_21",
+    extra_cols    = c(Erhebungswelle = "4"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -142,8 +146,9 @@
     )
   ),
   
-  `2021` = list(
-    Cohort = "2021", 
+  `2021_22` = list(
+    School_year = "2021_22",
+    extra_cols    = c(Erhebungswelle = "5"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -178,8 +183,9 @@
     )
   ),
   
-  `2022` = list(
-    Cohort = "2022", 
+  `2022_23` = list(
+    School_year = "2022_23",
+    extra_cols    = c(Erhebungswelle = "6"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -214,8 +220,9 @@
     )
   ),
   
-  `2023` = list(
-    Cohort = "2023", 
+  `2023_24` = list(
+    School_year = "2023_24",
+    extra_cols    = c(Erhebungswelle = "7"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -254,8 +261,9 @@
     )
   ),
   
-  `2024` = list(
-    Cohort = "2024", 
+  `2024_25` = list(
+    School_year = "2024_25",
+    extra_cols    = c(Erhebungswelle = "8"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -295,8 +303,9 @@
     )
   ),
   
-  `2025` = list(
-    Cohort = "2025", 
+  `2025_26` = list(
+    School_year = "2025_26",
+    extra_cols    = c(Erhebungswelle = "9"),
     join_col = ".row",
     school = list(
       sheet = 1,
@@ -339,20 +348,20 @@
 
 
 
-#' Get a cohort layout
+#' Get a school_year layout
 #'
-#' Returns the layout specification for a given cohort.
+#' Returns the layout specification for a given school_year.
 #'
-#' @param cohort Character or numeric, e.g. "2025".
+#' @param school_year Character or numeric, e.g. "2025_26".
 #'
 #' @return A layout list suitable for \code{read_sheets_in_file()} or
 #'   \code{bind_xlsx_files_in_dir()}.
 #' @export
-get_layout <- function(cohort) {
-  key <- as.character(cohort)
+get_layout <- function(school_year) {
+  key <- as.character(school_year)
   lay <- .bekihist_layouts[[key]]
   if (is.null(lay)) {
-    stop("No layout defined for cohort ", key, call. = FALSE)
+    stop("No layout defined for school_year ", key, call. = FALSE)
   }
   lay
 }

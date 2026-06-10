@@ -9,15 +9,15 @@ read_sheets_in_file(file, layout)
 \arguments{
 \item{file}{Character. Path to a single .xlsx file.}
 
-\item{layout}{List. Layout specification for this cohort, containing
+\item{layout}{List. Layout specification for this school_year, containing
 sublists \code{profile}, \code{tests}, \code{school}, and scalar
-entries such as \code{join_col} and \code{Cohort}.}
+entries such as \code{join_col} and \code{School_year}.}
 }
 \value{
 A tibble with one row per child, test results, and attached
-school-level metadata (all columns as character, plus \code{Cohort}).
+school-level metadata (all columns as character, plus \code{School_year}).
 }
 \description{
 Reads profile data, test data, and school metadata from one Excel file,
-using a cohort-specific layout, and returns a joined child-level table.
+using a school_year-specific layout, and returns a joined child-level table.
 }

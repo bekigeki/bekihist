@@ -42,7 +42,7 @@ read_table_generic <- function(file, spec) {
 #' Read school-level info from an Excel mask
 #'
 #' Reads header / metadata cells (school, class, date, etc.) defined
-#' by a cohort-specific layout specification.
+#' by a school_year-specific layout specification.
 #'
 #' @param file Character. Path to a single .xlsx file.
 #' @param spec List. Layout specification for the school sheet, with
@@ -78,20 +78,19 @@ read_school_info_generic <- function(file, spec) {
 #' Read and join all sheets from a single Excel mask
 #'
 #' Reads profile data, test data, and school metadata from one Excel file,
-#' using a cohort-specific layout, and returns a joined child-level table.
+#' using a school_year-specific layout, and returns a joined child-level table.
 #'
 #' @param file Character. Path to a single .xlsx file.
-#' @param layout List. Layout specification for this cohort, containing
+#' @param layout List. Layout specification for this school_year, containing
 #'   sublists \code{profile}, \code{tests}, \code{school}, and scalar
-#'   entries such as \code{join_col} and \code{Cohort}.
+#'   entries such as \code{join_col} and \code{School_year}.
 #'
 #' @return A tibble with one row per child, test results, and attached
-#'   school-level metadata (all columns as character, plus \code{Cohort}).
+#'   school-level metadata (all columns as character, plus \code{School_year}).
 #' @export
 read_sheets_in_file <- function(file, layout) {
   stopifnot(!is.null(layout))
 
-  #browser()
   profile <- read_table_generic(file, layout$profile) |>
     dplyr::filter(!is.na(Nr)) |>
     assert_unique_key(layout$join_col)
@@ -105,72 +104,84 @@ read_sheets_in_file <- function(file, layout) {
   tests_reduced <- tests |>
     dplyr::select(-XLSX_date_origin_import, -XLSX_date_origin_fixed)
 
+  # build static columns from layout
+  static_cols <- list(
+    School_year = as.character(layout$School_year)
+  )
+  if (!is.null(layout$extra_cols)) {
+    # coerce to named list so we can splice with !!!
+    extra <- as.list(layout$extra_cols)
+    static_cols <- c(static_cols, extra)
+  }
 
   out <- dplyr::left_join(profile, tests_reduced, by = layout$join_col) |>
     dplyr::mutate(
       dplyr::across(dplyr::everything(), as.character),
+      # splice school info (first row) as columns
       !!!as.list(school[1, , drop = FALSE]),
-      Cohort = as.character(layout$Cohort),
+      # splice static metadata columns from layout
+      !!!static_cols,
       XLSX_date_origin_import = dplyr::first(profile$XLSX_date_origin_import),
       XLSX_date_origin_fixed  = dplyr::first(profile$XLSX_date_origin_fixed)
     )
+
   out
 }
 
 
-#' Read and aggregate all Excel masks for one cohort
+#' Read and bind all Excel masks for one school_year
 #'
-#' For a given cohort, this function deduplicates all \code{.xlsx}
-#' BeKiGeKi Excel masks in the cohort directory, writes the deduplicated
+#' For a given school_year, this function deduplicates all \code{.xlsx}
+#' BeKiGeKi Excel masks in the school_year directory, writes the deduplicated
 #' files to a temporary subdirectory, and then binds them into a single
-#' cohort-level table using \code{bind_xlsx_files_in_dir()}. Cohort-level CSV
+#' school_year-level table using \code{bind_xlsx_files_in_dir()}. school_year-level CSV
 #' and RDS snapshot files are written to \code{base_path}.
 #'
-#' @param base_path Character scalar. Root directory containing the per-cohort
+#' @param base_path Character scalar. Root directory containing the per-school_year
 #'   subdirectories with raw Excel masks (e.g. \code{"~/beki/data-raw/"}).
-#' @param cohort Character scalar. Cohort identifier (typically a year such as
-#'   \code{"2017"}) that names both the input subdirectory and the output files.
+#' @param school_year Character scalar. School_year identifier (typically a school-year such as
+#'   \code{"2017_18"}) that names both the input subdirectory and the output files.
 #'
-#' @return A tibble with all deduplicated records for the given cohort, as
+#' @return A tibble with all deduplicated records for the given school_year, as
 #'   returned by \code{bind_xlsx_files_in_dir()}.
 #'
 #' @details
 #' This function is a high-level wrapper around
 #' \code{deduplicate_xlsx_files_in_dir()} and \code{bind_xlsx_files_in_dir()}.
-#' It assumes that \code{get_layout(cohort)} returns the appropriate layout
-#' specification for the requested cohort.
+#' It assumes that \code{get_layout(school_year)} returns the appropriate layout
+#' specification for the requested school_year.
 #'
-#' The function has side effects: it writes a cohort-level CSV file
-#' (\code{<cohort>.csv}) and RDS file (\code{<cohort>.rds}) into
+#' The function has side effects: it writes a school_year-level CSV file
+#' (\code{<school_year>.csv}) and RDS file (\code{<school_year>.rds}) into
 #' \code{base_path}, and creates or updates a temporary subdirectory
-#' \code{file.path(base_path, "tmp", cohort)} containing deduplicated
+#' \code{file.path(base_path, "tmp", school_year)} containing deduplicated
 #' Excel masks.
 #'
 #' @examples
 #' \dontrun{
-#' # Process cohort 2017 in the default BeKi data-raw tree
-#' d2017 <- read_cohort_xlsx(base_path = "~/beki/data-raw/", cohort = "2017")
+#' # Process school_year 2017_18 in the default BeKiGeKi data-raw tree
+#' d2017 <- read_school_year_xlsx(base_path = "~/beki/data-raw/", school_year = "2017_18")
 #' }
 #'
 #' @export
-read_cohort_xlsx <- function(base_path, cohort) {
-  # Input and deduplicated directories for this cohort
-  path_cohort <- file.path(base_path, cohort)        # raw Excel masks
-  path_dedup  <- file.path(base_path, "tmp", cohort) # deduplicated Excel masks
+read_school_year_xlsx <- function(base_path, school_year) {
+  # Input and deduplicated directories for this school_year
+  path_school_year <- file.path(base_path, school_year)        # raw Excel masks
+  path_dedup  <- file.path(base_path, "tmp", school_year) # deduplicated Excel masks
   
-  # 1) Deduplicate all xlsx files for this cohort into tmp/
+  # 1) Deduplicate all xlsx files for this school_year into tmp/
   deduplicate_xlsx_files_in_dir(
-    path_in  = path_cohort,
+    path_in  = path_school_year,
     path_out = path_dedup,
     copy     = TRUE
   )
   
-  # 2) Bind all deduplicated files of this cohort into single cohort-level CSV/RDS
+  # 2) Bind all deduplicated files of this school_year into single school_year-level CSV/RDS
   bind_xlsx_files_in_dir(
     path_in   = path_dedup,
-    layout    = get_layout(cohort),
-    path_csv  = file.path(base_path, paste0(cohort, ".csv")),
-    path_rds  = file.path(base_path, paste0(cohort, ".rds")),
+    layout    = get_layout(school_year),
+    path_csv  = file.path(base_path, paste0(school_year, ".csv")),
+    path_rds  = file.path(base_path, paste0(school_year, ".rds")),
     recursive = FALSE
   )
 }

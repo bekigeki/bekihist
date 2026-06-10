@@ -1,8 +1,8 @@
 ---
-title: "scientific-usefile: Dokumentation zur Erstellung eines public- oder scientific-use files jahrgangsübergreifender rohwerte"
+title: "scientific-usefile: Dokumentation zur Erstellung eines scientific-use files jahrgangsübergreifender Rohwerte"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{scientific-usefile: Dokumentation zur Erstellung eines public- oder scientific-use files jahrgangsübergreifender rohwerte}
+  %\VignetteIndexEntry{scientific-usefile: Dokumentation zur Erstellung eines scientific-use files jahrgangsübergreifender Rohwerte}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(bekihist)
+devtools::load_all("~/cloud-erfurt/EWF-bekigeki/bekihist")
+
+#library(bekihist)
 library(dplyr)
 library(purrr)
 library(readr)
@@ -23,23 +25,41 @@ library(readr)
 ```
 # Einleitung
 
-Dieses Vignette zeigt, wie die XLSX-Dateien jahrgangsübergreifend eingelesen und
-als csv- und rds-Datei zur weiteren Bearbeitung zwischengespeichert werden sowie der Allgemeinheit als
-public or scientific usefile zur Verfügung gestellt werden.
+Dieses Vignette zeigt, wie die XLSX-Dateien schuljahrübergreifend eingelesen und
+als csv- und rds-Datei zur weiteren Bearbeitung zwischengespeichert werden. 
 
-# Kohorten-Ordner einlesen
+# Rohdaten-Ordner einlesen
 
-- ).
+## Pre-Checks
+```{r checks, eval=FALSE}
+path    <- system.file("data-raw", package = "bekihist")
+path
+
+getwd()
+
+# delete  tmp dir
+unlink(paste0(path, "/tmp/"), recursive = TRUE)
+
+# dry run deduplication
+deduplicate_xlsx_files_in_dir(
+  path_in = path,
+  copy = FALSE)
+
+# eventually compare to other sources of truths
+compare_raw_and_tidy_data_filenames(
+  path_in_raw = paste0(path, "/2025_26"), 
+  path_in_tidy = "~/Dropbox/website/bekigeki.github.io/Archiv/2025/data-raw/masken/")
+```
 
 ```{r loop, eval=FALSE}
 
-path    <- system.file("data-raw", package = "bekihist")
-
-# Kohorten-Ordner waehlen
-cohorts <- as.character(2017:2025)
+# Rohdaten-Ordner waehlen
+school_years <- as.integer(2017:2025)
+school_years <- paste0(school_years, "_", gsub("^20", "", school_years + 1))
+school_years
 
 # 1) Per-cohort processing
-for (cohort in cohorts) {
+for (school_year in school_years) {
 
   # a) Deduplizieren:
   ## - es könnte sein, dass identische Dateiinhalte unter verschiedenem Dateinamen abgespeichert wurden
@@ -51,19 +71,21 @@ for (cohort in cohorts) {
   # b) Bind xslx
   # c) save
   
-  read_cohort_xlsx(base_path = path, cohort = cohort)
+  read_school_year_xlsx(
+    base_path = path,
+    school_year = school_year)
 }
-
 
 ```
 
-# Kohorten verbinden
+# Schuljahre verbinden und minimale filtern
 
 ```{r cohort-bind, eval=FALSE}
-# waehle Spalten aus, in denen geprüft werden soll Werte vorhanden sind,
-# lösche daraufhin die Zeilen, in denen kein einziger Wert darin enthalten ist
-# Hintergrund: Viele Spalten enthalten ueber alle Zeilen feste Werte, die
-
+# Wähle die Spalten aus, in denen geprüft werden soll, ob mindestens ein gültiger Wert
+# (also kein Eintrag aus `missing_codes`) vorhanden ist.
+# Entferne anschließend alle Zeilen, in denen in diesen Spalten nur Missing-Codes stehen.
+# Hintergrund: Viele Spalten enthalten über alle Zeilen hinweg konstante oder technisch bedingte
+# Werte (z.B. reine Missing-Codes), die für diese inhaltliche Prüfung nicht relevant sind.
 
 search_cols =  c(
    "Geschlecht", "Geburtsdatum_XLSX", "Geburtsdatum_Tag", "Geburtsdatum_Monat", "Geburtsdatum_Jahr",
@@ -74,33 +96,55 @@ search_cols =  c(
    "Run_54_m_Runden", "Run_Pylonen", "Run_m_2",
    "Anmerkungen")
 
-# 2) Bind across cohorts, clean, and export
-cohorts <- as.character(2017:2025)
-suf <- bind_cohorts(base_path = path,
-                              cohorts = cohorts,
-                              file_name_prefix = "beki_scientific_use_file", 
-                              search_cols = search_cols)
+# 2) Bind across school_years, clean, and export
 
+suf <- bind_school_years(
+  base_path = path,
+  school_years = school_years,
+  file_name_prefix = "beki_scientific_use_file", 
+  search_cols = search_cols,
+  missing_codes = c("--wählen--", "")
+)
+
+
+head(suf)
+
+beki_scientific_use_file <- suf$all_values_relevant
+save(beki_scientific_use_file, file = "data/beki_scientific_use_file.rda")
+devtools::document()
+
+
+# 3) Delete tmp folder (deduplication)
+unlink(paste0(path, "/tmp"), recursive = TRUE)
 ```
 
 # Inspektion
 
-```{r cohort-inspect, eval=FALSE}
+```{r school_year_inspect, eval=FALSE}
 # 3) quick inspections
-df <-  suf$all_values
+df <-  suf$all_values_relevant
 
 # Child counts
-df |> count(Cohort)
+df |> count(School_year)
 
+df |> colnames()
+
+df |> dplyr::glimpse()
+
+
+# detect wrong mergings
 df |>
   filter(Nr.x != Nr.y) |>
-  select(Cohort, File_name,Nr.x, Nr.y) |>
+  select(Erhebungswelle,
+         XLSX_Dateiname,
+         Nr.x,
+         Nr.y) |>
   print(n = Inf) |>
   knitr::kable()
 
 # unique child nr
 df |>
-  count(Cohort, Schulnummer, Klassenname, Nr.x) |>
+  count(School_year, Schulnummer, Klassenname, Nr.x) |>
   filter(n > 1)|>
   knitr::kable()
 
@@ -300,3 +344,46 @@ df |>
 |2021   |15797       |3b          |7    |  2|
 |2021   |15797       |3b          |8    |  2|
 |2021   |15797       |3b          |9    |  2|
+
+> # unique child nr
++ df |>
++   count(Cohort, Schulnummer, Klassenname, Nr.x) |>
++   filter(n > 1)|>
++   knitr::kable()
++ 
+
+|Cohort |Schulnummer |Klassenname |Nr.x |  n|
+|:------|:-----------|:-----------|:----|--:|
+|2025   |11207       |3a          |1    |  2|
+|2025   |11207       |3a          |10   |  2|
+|2025   |11207       |3a          |11   |  2|
+|2025   |11207       |3a          |12   |  2|
+|2025   |11207       |3a          |13   |  2|
+|2025   |11207       |3a          |14   |  2|
+|2025   |11207       |3a          |15   |  2|
+|2025   |11207       |3a          |16   |  2|
+|2025   |11207       |3a          |17   |  2|
+|2025   |11207       |3a          |18   |  2|
+|2025   |11207       |3a          |2    |  2|
+|2025   |11207       |3a          |3    |  2|
+|2025   |11207       |3a          |4    |  2|
+|2025   |11207       |3a          |5    |  2|
+|2025   |11207       |3a          |6    |  2|
+|2025   |11207       |3a          |7    |  2|
+|2025   |11207       |3a          |8    |  2|
+|2025   |11207       |3a          |9    |  2|
+|2025   |11207       |3b          |19   |  2|
+|2025   |11207       |3b          |20   |  2|
+|2025   |11207       |3b          |21   |  2|
+|2025   |11207       |3b          |22   |  2|
+|2025   |11207       |3b          |23   |  2|
+|2025   |11207       |3b          |24   |  2|
+|2025   |11207       |3b          |25   |  2|
+|2025   |11207       |3b          |27   |  2|
+|2025   |11207       |3b          |28   |  2|
+|2025   |11207       |3b          |29   |  2|
+|2025   |11207       |3b          |30   |  2|
+|2025   |11207       |3b          |31   |  2|
+|2025   |11207       |3b          |32   |  2|
+|2025   |11207       |3b          |33   |  2|
+> 

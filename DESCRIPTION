@@ -1,9 +1,9 @@
 Package: bekihist
 Title: Tools for Binding BeKiGeKi Excel “masks” into R data frames
-Version: 0.0.0.9001
+Version: 0.0.1.0
 Authors@R: 
     person("Toni", "Wöhrl", , "toni.woehrl@uni-erfurt.de", role = c("aut", "cre"))
-Description: Tools for deduplicating and importing BeKiGeKi Excel masks from multiple cohorts into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
+Description: Tools for deduplicating and importing BeKiGeKi Excel masks from multiple school years into a single scientific use file with minimally processed raw data. The package focuses on reproducible reading, and snapshot export (CSV/RDS) so that further tidying, harmonization, and analysis can be performed downstream in separate workflows.
 License: MIT 
 Encoding: UTF-8
 Language: en, de

@@ -16,7 +16,7 @@ bind_xlsx_files_in_dir(
 \arguments{
 \item{path_in}{Character. Directory containing \code{*.xlsx} Excel masks.}
 
-\item{layout}{List. Layout specification for this cohort (as used
+\item{layout}{List. Layout specification for this school_year (as used
 by \code{read_sheets_in_file()}).}
 
 \item{path_csv}{Character or NULL. Path to CSV snapshot file. If NULL,
